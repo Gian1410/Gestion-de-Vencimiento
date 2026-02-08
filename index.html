@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Gestión Vencimiento</title>
+    <link rel="stylesheet" href="dist/output.css">
+</head>
+<body class="bg-gray-100 h-screen">
+      <h1 class="font-black text-5xl text-center md:w-2/3 mx-auto mt-20">
+          Gestión de Vencimiento
+          <span class="text-indigo-700">Retiro</span>
+      </h1>
+
+      <div class="mt-12 md:flex container mx-auto ">
+          <div class="md:w-1/2 lg:w-2/5 mx-5">
+            <h2 class="font-black text-3xl text-center">Producto</h2>
+
+            <p class="text-lg mt-5 text-center mb-10">
+                Añade productos
+                <span class="text-indigo-600 font-bold">gestionalos</span>
+            </p>
+
+            <form 
+                id="formulario-producto"
+                class="bg-white shadow-md rounded-lg py-10 px-5 mb-10"
+            >
+                <div class="mb-5">
+                    <label for="producto" class="block text-gray-700 uppercase font-bold text-sm">
+                        Nombre Producto:
+                    </label>
+                    <input
+                        class="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                        type="text"
+                        id="producto"
+                        placeholder="Producto"
+                        name="producto"
+                    />  
+                </div>
+
+                <div class="mb-5">
+                    <label for="email" class="block text-gray-700 uppercase font-bold text-sm">
+                        Cantidad:
+                    </label>
+                    <input
+                        class="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                        type="number"
+                        id="cantidad"
+                        placeholder="Cantidad"
+                        name="cantidad"
+                    />  
+                </div>
+                <div class="mb-5">
+                    <label for="fecha" class="block text-gray-700 uppercase font-bold text-sm">
+                        Fecha Vencimiento
+                    </label>
+                    <input
+                        class="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                        type="date"
+                        id="vencimiento"
+                        name="vencimiento"
+                    />  
+                </div>
+
+                <div class="mb-5">
+                    <label for="categoria" class="block text-gray-700 uppercase font-bold text-sm">
+                        Selecciona la categoria
+                    </label>
+                    <select class="border-2 w-full p-2 mt-2"
+                        name="categoria" 
+                        id="categoria"
+                        >
+                        <option value="Selecciona" disabled selected hidden>Selecciona una Categoria</option>
+                        <option value="polloF">Pollo fresco</option>
+                        <option value="vacuno">Carne vacuno</option>
+                        <option value="polloPescCong">Pollo y Pescado Congelado</option>
+                        <option value="embQues">Embutidos y Quesos</option>
+                        <option value="lactRef">Yogurt ,mantequilla</option>
+                        <option value="cremaL">Cremas de leche</option>
+                        <option value="lecheUHT">Leches UHT,condensada,evaporada</option>
+                        <option value="huevos">Huevos</option>
+                        <option value="cong">Congelados</option>
+                        <option value="abarBase">Arroz,azúcar,avena</option>
+                        <option value="abarVar">Fideos,sal,salsas,bebidas,etc</option>
+                        <option value="snacks">Snacks</option>
+                        <option value="cigarros">Cigarros</option>
+                        <option value="mascotas">Mascotas</option>
+                        <option value="panes">Panes y Kekes</option>
+
+                    </select>
+                </div>
+
+                <div class="mb-5">
+                    <label for="sintomas" class="block text-gray-700 uppercase font-bold text-sm">
+                        Detalle o Comentario:
+                    </label>
+                    <textarea
+                        class="border-2 w-full p-2 mt-2 placeholder-gray-400 rounded-md"
+                        id="detalle"
+                        name="detalle"
+                        placeholder="Detalle o Descripción"
+                    ></textarea>  
+                </div>
+
+                <input
+                    type="submit"
+                    class="bg-indigo-600 w-full p-3 text-white uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors"
+                    value='Registrar Producto'
+                />
+              </form>
+          </div>
+
+          <div class="md:w-1/2 lg:w-3/5 md:h-screen overflow-y-scroll">
+              <h2 class="font-black text-3xl text-center">Listado Producto</h2>
+              <p class="text-xl mt-5 mb-10 text-center">
+                  Administra tus
+                  <span class="text-indigo-600 font-bold ">Productos y Retiros</span>
+              </p>
+              <div id="productos-lista">
+                  <p class="text-xl mt-5 mb-10 text-center">No Hay Productos</p>
+              </div>
+          </div>
+      </div>
+
+      <script src="js/app.js"></script>
+</body>
+</html>

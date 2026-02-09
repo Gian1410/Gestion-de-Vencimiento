@@ -65,6 +65,8 @@ detalleInput.addEventListener("change",datosProducto);
 
 formulario.addEventListener("submit",submitProducto);
 
+let editando = false;
+
 class AdminProductos{
     constructor(){
         this.productos = [];
@@ -72,6 +74,16 @@ class AdminProductos{
 
     agregar(producto){
         this.productos = [...this.productos,producto];
+        this.mostrar();
+    }
+
+    editar(productoActualizado){
+        this.productos = this.productos.map(producto => producto.id === productoActualizado.id ? productoActualizado : producto);
+        this.mostrar();
+    }
+
+    eliminar(id){
+        this.productos = this.productos.filter(producto => producto.id !== id);
         this.mostrar();
     }
 
@@ -131,13 +143,24 @@ class AdminProductos{
             diaARetirar.classList.add("font-normal","mb-3","text-gray-700","normal-case");
             diaARetirar.innerHTML = `<span class="font-bold uppercase">Fecha de Retiro: </span>${fechaRetiro.toLocaleDateString()}`;
 
+            const btnEliminar = document.createElement('button');
+            btnEliminar.classList.add('py-2', 'px-10', 'bg-red-600', 'hover:bg-red-700', 'text-white', 'font-bold', 'uppercase', 'rounded-lg', 'flex', 'items-center', 'gap-2');
+            btnEliminar.innerHTML = 'Eliminar <svg fill="none" class="h-5 w-5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+            btnEliminar.onclick = () => this.eliminar(producto.id)
+
+            const contenedorBotones = document.createElement("DIV");
+            contenedorBotones.classList.add("flex","justify-between","mt-10");
+
+            contenedorBotones.appendChild(btnEliminar);
+
             divProducto.appendChild(productoL);
             divProducto.appendChild(cantidad);
             divProducto.appendChild(fechaVencimiento);
             divProducto.appendChild(categoria);
             divProducto.appendChild(diasDiv);
-            divProducto.appendChild(detalle)
-            divProducto.appendChild(diaARetirar)
+            divProducto.appendChild(detalle);
+            divProducto.appendChild(diaARetirar);
+            divProducto.appendChild(contenedorBotones);
 
             productosLista.appendChild(divProducto)
         })
@@ -219,4 +242,18 @@ function reiniciarObjetoProducto() {
         vencimiento: "",
         detalle:"",
     })
+}
+
+function cargarEdicion(producto) {
+    Object.assign(productObj,producto);
+
+    // roductoInput.addEventListener("change",datosProducto);
+    // cantidadInput.addEventListener("change",datosProducto),
+    // categoriaInput.addEventListener("change", datosProducto)
+    // vencimientoInput.addEventListener("change",datosProducto),
+    // detalleInput.addEventListener("change",datosProducto);
+
+    editando = true;
+
+    formularioInput.value = "Guardar Cambios";
 }

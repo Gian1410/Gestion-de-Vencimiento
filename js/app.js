@@ -6,13 +6,9 @@ const detalleInput = document.querySelector("#detalle");
 
 const formulario = document.querySelector("#formulario-producto");
 const formularioInput = document.querySelector("#formulario-producto input[type='submit']");
-const productosLista = document.querySelector("#productos-lista")
+const productosLista = document.querySelector("#productos-lista");
 
-window.onload = () =>{
-    eventListeners();
-
-    crearDB();
-}
+let DB;
 
 let diasRetiro = {
   // Carnes y pescados
@@ -63,14 +59,11 @@ const productObj = {
     detalle: "",
 }
 
-eventListeners();
-function eventListeners() {
-    productoInput.addEventListener("change",datosProducto);
-    cantidadInput.addEventListener("change",datosProducto),
-    categoriaInput.addEventListener("change", datosProducto)
-    vencimientoInput.addEventListener("change",datosProducto),
-    detalleInput.addEventListener("change",datosProducto);
-}
+productoInput.addEventListener("change",datosProducto);
+cantidadInput.addEventListener("change",datosProducto),
+categoriaInput.addEventListener("change", datosProducto)
+vencimientoInput.addEventListener("change",datosProducto),
+detalleInput.addEventListener("change",datosProducto);
 
 
 formulario.addEventListener("submit",submitProducto);
@@ -83,18 +76,44 @@ class AdminProductos{
     }
 
     agregar(producto){
-        this.productos = [...this.productos,producto];
-        this.mostrar();
+
+        const transaction = DB.transaction(['productos'],'readwrite');
+        const objectStore = transaction.objectStore('productos');
+
+        objectStore.add(producto);
+        transaction.oncomplete = ()=>{
+            this.productos = [...this.productos,producto];
+            this.mostrar();
+        }
     }
 
     editar(productoActualizado){
-        this.productos = this.productos.map(producto => producto.id === productoActualizado.id ? productoActualizado : producto);
-        this.mostrar();
+
+        const transaction = DB.transaction(['productos'],'readwrite');
+        const objectStore = transaction.objectStore('productos');
+
+        objectStore.put(productoActualizado);
+
+        transaction.oncomplete = () =>{
+            this.productos = this.productos.map(producto => producto.id === productoActualizado.id ? productoActualizado : producto);
+
+            this.mostrar();
+        }
     }
 
     eliminar(id){
         this.productos = this.productos.filter(producto => producto.id !== id);
         this.mostrar();
+
+        const transaction = DB.transaction(['productos'],'readwrite');
+        const objectStore = transaction.objectStore('productos');
+
+        objectStore.delete(id);
+
+        transaction.oncomplete = () =>{
+            this.productos = this.productos.filter(producto => producto.id !== id);
+            this.mostrar();
+        }
     }
 
     mostrar(){
@@ -182,6 +201,45 @@ class AdminProductos{
 
             productosLista.appendChild(divProducto)
         })
+    }
+
+    cargarDesdeDB(){
+        const transaction = DB.transaction(["productos"],"readonly");
+        const objectStore = transaction.objectStore("productos");
+
+        objectStore.openCursor().onsuccess = (e) =>{
+            const cursor = e.target.result;
+            if (cursor) {
+                this.productos = [...this.productos, cursor.value];
+                cursor.continue();
+            }else{
+                this.mostrar();
+            }
+        }
+    }
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+    crearDB();
+})
+
+function crearDB() {
+    const request = indexedDB.open('inventario',1);
+
+    request.onerror = function() {
+        console.log("Error al abrir la DB");
+    }
+    request.onsuccess = function() {
+        DB = request.result;
+        productos.cargarDesdeDB();
+    }
+    request.onupgradeneeded = function(e) {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('productos')) {
+            db.createObjectStore("productos",{
+                keyPath: "id"
+            })
+        }
     }
 }
 
@@ -281,9 +339,4 @@ function cargarEdicion(producto) {
     editando = true;
 
     formularioInput.value = "Guardar Cambios";
-}
-
-function crearDB() {
-    // base de datos Indexed DB
-    const crearDB = window.indexedDB.open('productos',1)
 }

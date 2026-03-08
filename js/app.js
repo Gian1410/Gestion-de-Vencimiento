@@ -6,13 +6,9 @@ const detalleInput = document.querySelector("#detalle");
 
 const formulario = document.querySelector("#formulario-producto");
 const formularioInput = document.querySelector("#formulario-producto input[type='submit']");
-const productosLista = document.querySelector("#productos-lista")
+const productosLista = document.querySelector("#productos-lista");
 
-window.onload = () =>{
-    eventListeners();
-
-    crearDB();
-}
+let DB;
 
 let diasRetiro = {
   // Carnes y pescados
@@ -63,14 +59,11 @@ const productObj = {
     detalle: "",
 }
 
-eventListeners();
-function eventListeners() {
-    productoInput.addEventListener("change",datosProducto);
-    cantidadInput.addEventListener("change",datosProducto),
-    categoriaInput.addEventListener("change", datosProducto)
-    vencimientoInput.addEventListener("change",datosProducto),
-    detalleInput.addEventListener("change",datosProducto);
-}
+productoInput.addEventListener("change",datosProducto);
+cantidadInput.addEventListener("change",datosProducto),
+categoriaInput.addEventListener("change", datosProducto)
+vencimientoInput.addEventListener("change",datosProducto),
+detalleInput.addEventListener("change",datosProducto);
 
 
 formulario.addEventListener("submit",submitProducto);
@@ -93,12 +86,23 @@ class AdminProductos{
         this.productos = this.productos.map(producto => producto.id === productoActualizado.id ? productoActualizado : producto);
         this.guardarEnStorage();
         this.mostrar();
+
     }
 
     eliminar(id){
         this.productos = this.productos.filter(producto => producto.id !== id);
         this.guardarEnStorage();
         this.mostrar();
+
+        const transaction = DB.transaction(['productos'],'readwrite');
+        const objectStore = transaction.objectStore('productos');
+
+        objectStore.delete(id);
+
+        transaction.oncomplete = () =>{
+            this.productos = this.productos.filter(producto => producto.id !== id);
+            this.mostrar();
+        }
     }
 
     mostrar(){
@@ -187,6 +191,7 @@ class AdminProductos{
             productosLista.appendChild(divProducto)
         })
     }
+
     cargarStorage(){
         const datos = localStorage.getItem("productos");
         if (datos) {
@@ -301,9 +306,4 @@ function cargarEdicion(producto) {
     editando = true;
 
     formularioInput.value = "Guardar Cambios";
-}
-
-function crearDB() {
-    // base de datos Indexed DB
-    const crearDB = window.indexedDB.open('productos',1)
 }

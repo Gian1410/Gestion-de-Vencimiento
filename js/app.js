@@ -84,16 +84,20 @@ class AdminProductos{
 
     agregar(producto){
         this.productos = [...this.productos,producto];
+        this.guardarEnStorage();
         this.mostrar();
+
     }
 
     editar(productoActualizado){
         this.productos = this.productos.map(producto => producto.id === productoActualizado.id ? productoActualizado : producto);
+        this.guardarEnStorage();
         this.mostrar();
     }
 
     eliminar(id){
         this.productos = this.productos.filter(producto => producto.id !== id);
+        this.guardarEnStorage();
         this.mostrar();
     }
 
@@ -183,9 +187,25 @@ class AdminProductos{
             productosLista.appendChild(divProducto)
         })
     }
+    cargarStorage(){
+        const datos = localStorage.getItem("productos");
+        if (datos) {
+            this.productos = JSON.parse(datos);
+            this.mostrar();
+        }
+    }
+
+
+    guardarEnStorage(){
+        localStorage.setItem("productos",JSON.stringify(this.productos))
+    }
 }
 
 const productos = new AdminProductos();
+
+document.addEventListener("DOMContentLoaded",()=>{
+    productos.cargarStorage();
+})
 
 function submitProducto(e) {
     e.preventDefault();

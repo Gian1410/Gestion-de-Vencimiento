@@ -127,14 +127,14 @@ class AdminProductos{
             const fechaRetiro = new Date(fechaV);
             fechaRetiro.setDate(fechaRetiro.getDate() - dias);
             const diasRestantes = Math.ceil((fechaRetiro - hoy)/(1000 * 60 * 60 * 24));
-            
-            const clave = 'alerta_' + producto.id;
 
-            if (diasRestantes <= 3 && diasRestantes >= 0) {
-                enviarNotificacion(`El producto ${producto.producto} debe retirarse en ${diasRestantes} diás`);
-                localStorage.setItem(clave,"enviado")
+            let colorClase = "text-green-600";
+            if (diasRestantes <= 3) {
+                colorClase = 'text-red-600';
+            }else if(diasRestantes <= 5){
+                colorClase = 'text-yellow-500'
             }
-
+            
             const divProducto = document.createElement("DIV");
             divProducto.classList.add("mx-5","my-10","bg-white","shadow-md","px-5","py-10","rounded-xl");
 
@@ -157,7 +157,7 @@ class AdminProductos{
 
 
             const diasDiv = document.createElement("P");
-            diasDiv.classList.add("font-normal","mb-3","text-gray-700","normal-case");
+            diasDiv.classList.add("font-normal","mb-3",colorClase,"normal-case");
             diasDiv.innerHTML = `<span class="font-bold uppercase">Dias restantes: </span>${diasRestantes}`;
 
             const detalle = document.createElement("P");
@@ -216,7 +216,6 @@ class AdminProductos{
 const productos = new AdminProductos();
 
 document.addEventListener("DOMContentLoaded",()=>{
-    solicitarPermisoNotificacion()<
     productos.cargarStorage();
 })
 
@@ -314,27 +313,4 @@ function cargarEdicion(producto) {
     editando = true;
 
     formularioInput.value = "Guardar Cambios";
-}
-
-function enviarNotificacion(mensaje) {
-    if (Notification.permission === "granted") {
-        new Notification("Alerta de Vencimiento",{
-            body: mensaje,
-            icon: "/icons/warning-icon.svg"
-        })
-    }
-}
-
-function solicitarPermisoNotificacion() {
-    if (!("Notification" in window)) {
-        console.log("No hay notificacion en tu navegador");
-        return
-    }
-    if (Notification.permission === 'granted') {
-        Notification.requestPermission().then(permiso =>{
-            if (permiso === 'granted') {
-                alert('Notificaciones Activadas')
-            }
-        })
-    }
 }

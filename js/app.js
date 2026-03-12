@@ -8,8 +8,6 @@ const formulario = document.querySelector("#formulario-producto");
 const formularioInput = document.querySelector("#formulario-producto input[type='submit']");
 const productosLista = document.querySelector("#productos-lista");
 
-let DB;
-
 let diasRetiro = {
   // Carnes y pescados
   polloF: 1,        // Pollo fresco

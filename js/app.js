@@ -91,16 +91,6 @@ class AdminProductos{
         this.productos = this.productos.filter(producto => producto.id !== id);
         this.guardarEnStorage();
         this.mostrar();
-
-        const transaction = DB.transaction(['productos'],'readwrite');
-        const objectStore = transaction.objectStore('productos');
-
-        objectStore.delete(id);
-
-        transaction.oncomplete = () =>{
-            this.productos = this.productos.filter(producto => producto.id !== id);
-            this.mostrar();
-        }
     }
 
     mostrar(){
@@ -126,12 +116,7 @@ class AdminProductos{
             fechaRetiro.setDate(fechaRetiro.getDate() - dias);
             const diasRestantes = Math.ceil((fechaRetiro - hoy)/(1000 * 60 * 60 * 24));
 
-            let colorClase = "text-green-600";
-            if (diasRestantes <= 3) {
-                colorClase = 'text-red-600';
-            }else if(diasRestantes <= 5){
-                colorClase = 'text-yellow-500'
-            }
+            
             
             const divProducto = document.createElement("DIV");
             divProducto.classList.add("mx-5","my-10","bg-white","shadow-md","px-5","py-10","rounded-xl");
@@ -151,7 +136,6 @@ class AdminProductos{
             const categoria = document.createElement("P");
             categoria.classList.add("font-normal","mb-3","text-gray-700","normal-case");
             categoria.innerHTML = `<span class="font-bold uppercase">Categoria: </span>${producto.categoriaTexto}`;
-
 
 
             const diasDiv = document.createElement("P");
@@ -280,8 +264,6 @@ function datosProducto(e) {
         productObj[e.target.name] = e.target.value;
         
     }
-    
-    console.log(productObj);
 }
 
 function generarId() {

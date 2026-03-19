@@ -139,7 +139,7 @@ class AdminProductos{
 
 
             const diasDiv = document.createElement("P");
-            diasDiv.classList.add("font-normal","mb-3",colorClase,"normal-case");
+            diasDiv.classList.add("font-normal","mb-3","normal-case");
             diasDiv.innerHTML = `<span class="font-bold uppercase">Dias restantes: </span>${diasRestantes}`;
 
             const detalle = document.createElement("P");
